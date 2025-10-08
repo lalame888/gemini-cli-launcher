@@ -3,8 +3,13 @@ import shutil
 import os
 from tkinter import messagebox
 
+import sys
+
 # 主要設定目錄，與主程式 start_gemini.py 中定義的路徑一致
-CONFIG_DIR = os.path.expanduser("~/.config/gemini_cli_launcher")
+if sys.platform == 'win32':
+    CONFIG_DIR = os.path.join(os.getenv('APPDATA'), "gemini_cli_launcher")
+else:
+    CONFIG_DIR = os.path.expanduser("~/.config/gemini_cli_launcher")
 
 def reset_config():
     """重置設定的主函式"""

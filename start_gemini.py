@@ -6,8 +6,13 @@ import subprocess
 import sys
 
 # --- 常數設定 ---
+import sys
+
 # 將設定檔放在使用者 home 目錄下的 .config 資料夾，是比較標準的做法
-CONFIG_DIR = os.path.expanduser("~/.config/gemini_cli_launcher")
+if sys.platform == 'win32':
+    CONFIG_DIR = os.path.join(os.getenv('APPDATA'), "gemini_cli_launcher")
+else:
+    CONFIG_DIR = os.path.expanduser("~/.config/gemini_cli_launcher")
 CONFIG_FILE = os.path.join(CONFIG_DIR, "config.json")
 # Shell 腳本的路徑保持不變
 SHELL_SCRIPT_PATH = "/Users/lala.huang/Documents/projects/lala/gemini_cli/run_gemini_logic.sh"
@@ -45,49 +50,82 @@ def save_config(config):
 # --- 核心執行邏輯 ---
 
 def generate_and_run_script(config):
-    """根據設定動態生成並執行 Shell 腳本"""
-    script_lines = ["#!/bin/bash"]
-    
-    if config.get("use_nvm", False):
-        script_lines.extend([
-            'echo "--- Setting up NVM environment ---"',
-            'export NVM_DIR="$HOME/.nvm"',
-            '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || echo "NVM script not found, skipping..."',
-            f'echo "--- Switching to Node v{config["node_version"]} ---"',
-            f'nvm use {config["node_version"]}'
-        ])
-
+    """根據設定動態生成並執行 Shell/Batch 腳本"""
     gemini_dir = config.get("gemini_directory", "")
     if not os.path.isdir(gemini_dir):
         messagebox.showerror("路徑錯誤", f"指定的目錄不存在: {gemini_dir}")
         return
 
-    script_lines.extend([
-        f'echo "--- Changing to project directory: {gemini_dir} ---"',
-        f'cd "{gemini_dir}"',
-        'echo "--- Starting Gemini CLI ---"',
-        'gemini',
-        'echo "--- Gemini CLI exited. Press Enter to close this terminal. ---"',
-        'read' # 等待使用者按 Enter
-    ])
-    
-    script_content = "\n".join(script_lines)
+    if sys.platform == 'win32':
+        # Windows 邏輯
+        batch_lines = []
+        batch_lines.append(f"cd /d "{gemini_dir}"") # /d 參數用於切換不同磁碟機
 
-    try:
-        with open(SHELL_SCRIPT_PATH, 'w', encoding='utf-8') as f:
-            f.write(script_content)
+        if config.get("use_nvm", False):
+            node_version = config["node_version"]
+            batch_lines.append(f"call nvm use {node_version}") # nvm-windows 使用 call nvm
+            batch_lines.append(f"if %errorlevel% neq 0 (echo 無法切換到 Node.js v{node_version}，請確認已安裝該版本並設定 NVM-Windows) && pause && exit /b %errorlevel%")
         
-        os.chmod(SHELL_SCRIPT_PATH, 0o755)
+        batch_lines.append("echo --- Starting Gemini CLI ---")
+        batch_lines.append("gemini")
+        batch_lines.append("echo --- Gemini CLI exited. Press any key to close this terminal. ---")
+        batch_lines.append("pause") # 等待使用者按任意鍵
 
-        applescript_command = f'tell application "Terminal" to do script "{os.path.abspath(SHELL_SCRIPT_PATH)}"'
-        subprocess.run(["osascript", "-e", applescript_command], check=True)
+        # 將批次指令寫入一個臨時 .bat 檔案
+        batch_script_path = os.path.join(os.getenv('TEMP'), "run_gemini_logic.bat")
+        try:
+            with open(batch_script_path, 'w', encoding='utf-8') as f:
+                f.write("\n".join(batch_lines))
+            
+            # 使用 start 命令在新的 CMD 視窗中執行批次檔
+            subprocess.Popen(f"start cmd.exe /k "{batch_script_path}"", shell=True)
+            
+        except IOError as e:
+            messagebox.showerror("腳本錯誤", f"無法寫入或執行 Batch 腳本: {e}")
+        except Exception as e:
+            messagebox.showerror("未知錯誤", f"發生預期外的錯誤: {e}")
+
+    else:
+        # macOS/Linux 邏輯 (保持不變)
+        script_lines = ["#!/bin/bash"]
         
-    except IOError as e:
-        messagebox.showerror("腳本錯誤", f"無法寫入或執行 Shell 腳本: {e}")
-    except subprocess.CalledProcessError as e:
-        messagebox.showerror("執行錯誤", f"無法啟動終端機: {e}")
-    except Exception as e:
-        messagebox.showerror("未知錯誤", f"發生預期外的錯誤: {e}")
+        if config.get("use_nvm", False):
+            script_lines.extend([
+                'echo "--- Setting up NVM environment ---"',
+                'export NVM_DIR="$HOME/.nvm"',
+                '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || echo "NVM script not found, skipping..."',
+                f'echo "--- Switching to Node v{config["node_version"]} ---"',
+                f'nvm use {config["node_version"]}'
+            ])
+
+        script_lines.extend([
+            f'echo "--- Changing to project directory: {gemini_dir} ---"',
+            f'cd "{gemini_dir}"',
+            'echo "--- Starting Gemini CLI ---"',
+            'gemini',
+            'echo "--- Gemini CLI exited. Press Enter to close this terminal. ---"',
+            'read' # 等待使用者按 Enter
+        ])
+        
+        script_content = "\n".join(script_lines)
+
+        # 這裡的 SHELL_SCRIPT_PATH 仍然指向 macOS 的 .sh 檔案
+        # 但在 Windows 邏輯中，我們不再使用它
+        try:
+            with open(SHELL_SCRIPT_PATH, 'w', encoding='utf-8') as f:
+                f.write(script_content)
+            
+            os.chmod(SHELL_SCRIPT_PATH, 0o755)
+
+            applescript_command = f'tell application "Terminal" to do script "{os.path.abspath(SHELL_SCRIPT_PATH)}"'
+            subprocess.run(["osascript", "-e", applescript_command], check=True)
+            
+        except IOError as e:
+            messagebox.showerror("腳本錯誤", f"無法寫入或執行 Shell 腳本: {e}")
+        except subprocess.CalledProcessError as e:
+            messagebox.showerror("執行錯誤", f"無法啟動終端機: {e}")
+        except Exception as e:
+            messagebox.showerror("未知錯誤", f"發生預期外的錯誤: {e}")
 
 
 # --- GUI 介面 ---
