@@ -26,18 +26,6 @@
 
 本專案主要圍繞以下核心技術：
 
-### Gemini CLI
-
-**Gemini CLI** 是一個命令列介面工具，本啟動器旨在簡化其在特定 Node.js 環境下的啟動流程。
-
-**如何安裝 Gemini CLI**：
-
-請使用以下指令全域安裝 Gemini CLI：
-
-```bash
-sudo npm install -g @google/gemini-cli
-```
-
 ### NVM (Node Version Manager) / NVM-Windows
 
 **NVM (Node Version Manager)** 是一個用於管理多個 Node.js 版本的工具。它允許你在不同的專案之間輕鬆切換 Node.js 版本，確保開發環境的隔離與穩定。
@@ -66,6 +54,18 @@ sudo npm install -g @google/gemini-cli
 nvm --version
 ```
 如果顯示版本號，則表示安裝成功。如果看到「command not found」，請確保你已正確設定並載入 shell/環境變數。
+
+### Gemini CLI
+
+**Gemini CLI** 是一個命令列介面工具，本啟動器旨在簡化其在特定 Node.js 環境下的啟動流程。
+
+**如何安裝 Gemini CLI**：
+
+請使用以下指令全域安裝 Gemini CLI：
+
+```bash
+sudo npm install -g @google/gemini-cli
+```
 
 ## 系統與建置需求 (macOS & Windows)
 
