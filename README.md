@@ -3,11 +3,64 @@
 
 這是一個圖形化啟動器 (GUI Launcher)，用來簡化啟動 `gemini` 命令列工具的流程，支援 macOS 和 Windows 作業系統。
 
-## 問題背景
+## 前提條件 (Prerequisites)
 
-直接使用 `gemini` CLI 工具時，可能需要先在終端機中手動設定特定的 Node.js 版本 (透過 `nvm` 或 `nvm-windows`)，並切換到正確的專案目錄。這個過程比較繁瑣。
+在開始之前，請確認您的系統已具備以下環境。本工具是為已有 `nvm` 和 `gemini-cli` 使用經驗的使用者設計的輔助工具。
 
-本專案透過一個圖形介面，讓使用者可以一次性設定好所需環境，並提供「直接啟動」與「重置設定」的選項，大幅簡化了日常使用流程。
+1.  **NVM 已安裝**
+    *   您的系統中必須已安裝 [nvm](https://github.com/nvm-sh/nvm) (macOS/Linux) 或 [nvm-windows](https://github.com/coreybutler/nvm-windows)。
+    *   <details>
+        <summary>點此展開/收合 NVM 安裝指南</summary>
+
+        > **NVM (Node Version Manager)** 是一個用於管理多個 Node.js 版本的工具。它允許你在不同的專案之間輕鬆切換 Node.js 版本，確保開發環境的隔離與穩定。
+        >
+        >*   **macOS/Linux**：請參考 [NVM 官方 GitHub 頁面](https://github.com/nvm-sh/nvm) 上的指示進行安裝。通常會是類似以下的指令：
+        >    ```bash
+        >    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+        >    ```
+        >    或者使用 `wget`：
+        >    ```bash
+        >    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+        >    ```
+        >    *(請注意：`v0.39.7` 是撰寫本文時的穩定版本，你可以訪問 [NVM 官方 GitHub 頁面](https://github.com/nvm-sh/nvm) 查看最新版本。)*
+        >
+        >    安裝後，請務必依照 NVM 的指示設定你的 shell 環境 (例如將 `source ~/.nvm/nvm.sh` 加入到 `.zshrc` 或 `.bash_profile`)。
+        >
+        >*   **Windows**：請參考 [NVM-Windows 官方 GitHub 頁面](https://github.com/coreybutler/nvm-windows) 上的指示進行安裝。
+        >
+        >    安裝後，請確保 `nvm` 指令在你的命令提示字元或 PowerShell 中可用。
+        >
+        >**驗證安裝**：
+        >
+        >要確認 NVM/NVM-Windows 是否已正確安裝，請執行以下指令：
+        >
+        >```bash
+        >nvm --version
+        >```
+        >如果顯示版本號，則表示安裝成功。如果看到「command not found」，請確保你已正確設定並載入 shell/環境變數。
+        </details>
+
+2.  **Gemini CLI 已安裝**
+    *   您必須已透過 `npm` 全域安裝了 `@google/gemini-cli`。
+    *   <details>
+        <summary>點此展開/收合 Gemini CLI 安裝指南</summary>
+        
+        > **Gemini CLI** 是一個命令列介面工具，本啟動器旨在簡化其在特定 Node.js 環境下的啟動流程。
+        > 
+        > **如何安裝 Gemini CLI**：
+        > 
+        > 請使用以下指令全域安裝 Gemini CLI：
+        > 
+        > ```bash
+        > sudo npm install -g @google/gemini-cli
+        > ```
+        </details>
+
+## 這個工具解決了什麼問題？
+
+如果您厭倦了每次啟動 `gemini` 指令前，都需要手動打開終端機、透過 `nvm use <version>` 切換 Node.js 版本，然後再 `cd` 到專案目錄的繁瑣流程，那麼這個工具就是為您設計的。
+
+本專案提供一個圖形介面，讓您一次性設定好所需環境，之後便可一鍵啟動，大幅簡化您的日常工作流程。
 
 ## 功能
 
@@ -22,54 +75,31 @@
     *   提供一個簡單、直覺的方式來刪除已儲存的設定。
     *   使用者點擊後，會彈出確認視窗，同意後即可將所有設定恢復到預設狀態。
 
-## 核心技術簡介
+## 安裝方式 (macOS)
 
-本專案主要圍繞以下核心技術：
+我們提供預先建置好的安裝檔，建議所有使用者透過此方式安裝。
 
-### NVM (Node Version Manager) / NVM-Windows
+1.  **下載最新版本**
+    *   請前往本專案的 **[Releases 頁面](https://github.com/lalame888/gemini-cli-launcher/releases)**。
+    *   在最新的版本中，下載 `Gemini CLI Launcher.dmg` 和 `Reset Settings.dmg` 檔案。
 
-**NVM (Node Version Manager)** 是一個用於管理多個 Node.js 版本的工具。它允許你在不同的專案之間輕鬆切換 Node.js 版本，確保開發環境的隔離與穩定。
+2.  **進行安裝**
+    *   雙擊打開下載的 `.dmg` 檔案。
+    *   在彈出的視窗中，將應用程式圖示拖曳到「應用程式」(Applications) 資料夾的捷徑上。
+    *   安裝完成！您現在可以從「應用程式」資料夾中啟動它。
 
-*   **macOS/Linux**：請參考 [NVM 官方 GitHub 頁面](https://github.com/nvm-sh/nvm) 上的指示進行安裝。通常會是類似以下的指令：
-    ```bash
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    ```
-    或者使用 `wget`：
-    ```bash
-    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    ```
-    *(請注意：`v0.39.7` 是撰寫本文時的穩定版本，你可以訪問 [NVM 官方 GitHub 頁面](https://github.com/nvm-sh/nvm) 查看最新版本。)*
+## 使用方式
 
-    安裝後，請務必依照 NVM 的指示設定你的 shell 環境 (例如將 `source ~/.nvm/nvm.sh` 加入到 `.zshrc` 或 `.bash_profile`)。
+-   從您的「應用程式」資料夾中，執行 `Gemini CLI Launcher` 來進行設定或啟動。
+-   如果需要恢復預設設定，執行 `Reset Settings` 即可。
 
-*   **Windows**：請參考 [NVM-Windows 官方 GitHub 頁面](https://github.com/coreybutler/nvm-windows) 上的指示進行安裝。
 
-    安裝後，請確保 `nvm` 指令在你的命令提示字元或 PowerShell 中可用。
 
-**驗證安裝**：
+## 開發者：如何從原始碼建置
 
-要確認 NVM/NVM-Windows 是否已正確安裝，請執行以下指令：
+若要從原始碼建置本專案，您的開發環境需要滿足以下需求。
 
-```bash
-nvm --version
-```
-如果顯示版本號，則表示安裝成功。如果看到「command not found」，請確保你已正確設定並載入 shell/環境變數。
-
-### Gemini CLI
-
-**Gemini CLI** 是一個命令列介面工具，本啟動器旨在簡化其在特定 Node.js 環境下的啟動流程。
-
-**如何安裝 Gemini CLI**：
-
-請使用以下指令全域安裝 Gemini CLI：
-
-```bash
-sudo npm install -g @google/gemini-cli
-```
-
-## 系統與建置需求 (macOS & Windows)
-
-在開始之前，請確保你的系統已安裝以下軟體：
+### 系統與建置需求
 
 1.  **作業系統**:
     *   macOS 13 (Ventura) 或更高版本。
@@ -83,9 +113,9 @@ sudo npm install -g @google/gemini-cli
     *   Windows：請參考 [nvm-windows 的官方說明](https://github.com/coreybutler/nvm-windows) 進行安裝。
 4.  **Node.js**：請透過 `nvm` 或 `nvm-windows` 安裝你需要的 Node.js 版本 (例如 `nvm install 22`)。
 
-## 如何建置
+### 建置流程
 
-本專案提供一個自動化腳本 `build.sh`，可以簡化打包流程。請依照以下步驟來打包產生應用程式：
+本專案提供一個自動化腳本，可以簡化從原始碼建置的流程。
 
 1.  **Clone 專案**:
     ```bash
@@ -94,42 +124,35 @@ sudo npm install -g @google/gemini-cli
     ```
 
 2.  **執行打包腳本**:
+    腳本會自動建立虛擬環境、安裝依賴並打包應用程式。
 
-    腳本預設會以「單一檔案 (onefile)」模式進行建置。你也可以選擇建置為「資料夾 (folder)」模式。以下是兩種模式的簡單說明：
-
-    *   **單一檔案 (onefile) 模式**：將所有程式碼和依賴項打包成一個獨立的可執行檔 (例如 `Gemini CLI Launcher.exe`)。
-        *   **優點**：分發簡單，只有一個檔案。
-        *   **缺點**：啟動速度可能稍慢，因為每次執行時都需要在背景解壓縮檔案。
-    *   **資料夾 (folder) 模式**：建立一個包含主執行檔和所有依賴項 (如 `.dll`、`.pyc` 檔案) 的資料夾。
-        *   **優點**：啟動速度比單一檔案模式快。
-        *   **缺點**：需要分發整個資料夾，相對不便。
-
-    *   **macOS/Linux**:
+    #### macOS/Linux
+    
+    *   **產生應用程式 (預設, onefile)**:
         ```bash
-        # 建置為單一檔案 (預設)
         ./build.sh
-
-        # 或者，建置為資料夾模式
+        ```
+    *   **產生應用程式 (folder 模式)**:
+        ```bash
         ./build.sh folder
         ```
+    *   **產生 macOS 安裝檔 (.dmg)**:
+        需要先安裝 `create-dmg` (`brew install create-dmg`)。
+        ```bash
+        ./build.sh dmg
+        ```
 
-    *   **Windows (Command Prompt)**:
+    #### Windows (Command Prompt)
+
+    *   **產生應用程式 (預設, onefile)**:
         ```cmd
-        rem 建置為單一檔案 (預設)
         build.bat
-
-        rem 或者，建置為資料夾模式
+        ```
+    *   **產生應用程式 (folder 模式)**:
+        ```cmd
         build.bat folder
         ```
 
-5.  **完成**!
-    建置完成後，你可以在 `dist` 資料夾中找到 `Gemini CLI Launcher` 和 `Reset Settings` 這兩個應用程式。
-
-## 使用方式
-
--   將 `dist` 資料夾中的應用程式檔案複製到你喜歡的任何位置 (例如 macOS 的「應用程式」資料夾，或 Windows 的任何目錄)。
--   執行 `Gemini CLI Launcher` 來進行設定或啟動。
--   如果需要恢復預設設定，執行 `Reset Settings` 即可。
 
 ## 授權
 
