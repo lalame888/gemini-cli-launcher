@@ -77,6 +77,7 @@ sudo npm install -g @google/gemini-cli
 2.  **Python 3.12 (或更高版本)**：
     *   **macOS**：**強烈建議**從 [Python 官方網站](https://www.python.org/downloads/macos/) 下載並安裝。這會確保你安裝的是與 macOS GUI 工具鏈最相容的「框架建置 (Framework Build)」版本。
     *   **Windows**：從 [Python 官方網站](https://www.python.org/downloads/windows/) 下載並安裝。安裝時請務必勾選「Add Python to PATH」選項。
+    *   **確認安裝**：你可以在終端機/命令提示字元中執行 `python3 --version` (macOS/Linux) 或 `py --version` (Windows) 來確認 Python 3 是否已安裝並在 PATH 中。
 3.  **Node Version Manager (nvm)** (macOS/Linux) 或 **NVM-Windows** (Windows)：
     *   macOS/Linux：請參考 [nvm 的官方說明](https://github.com/nvm-sh/nvm) 進行安裝。
     *   Windows：請參考 [nvm-windows 的官方說明](https://github.com/coreybutler/nvm-windows) 進行安裝。
@@ -84,7 +85,7 @@ sudo npm install -g @google/gemini-cli
 
 ## 如何建置
 
-請依照以下步驟來打包產生應用程式：
+本專案提供一個自動化腳本 `build.sh`，可以簡化打包流程。請依照以下步驟來打包產生應用程式：
 
 1.  **Clone 專案**:
     ```bash
@@ -92,113 +93,37 @@ sudo npm install -g @google/gemini-cli
     cd gemini-cli-launcher
     ```
 
-2.  **建立並啟用 Python 虛擬環境**:
-    *   請務必使用你從官方網站安裝的 Python 版本。
-    *   **macOS**:
+2.  **執行打包腳本**:
+
+    腳本預設會以「單一檔案 (onefile)」模式進行建置。你也可以選擇建置為「資料夾 (folder)」模式。以下是兩種模式的簡單說明：
+
+    *   **單一檔案 (onefile) 模式**：將所有程式碼和依賴項打包成一個獨立的可執行檔 (例如 `Gemini CLI Launcher.exe`)。
+        *   **優點**：分發簡單，只有一個檔案。
+        *   **缺點**：啟動速度可能稍慢，因為每次執行時都需要在背景解壓縮檔案。
+    *   **資料夾 (folder) 模式**：建立一個包含主執行檔和所有依賴項 (如 `.dll`、`.pyc` 檔案) 的資料夾。
+        *   **優點**：啟動速度比單一檔案模式快。
+        *   **缺點**：需要分發整個資料夾，相對不便。
+
+    *   **macOS/Linux**:
         ```bash
-        # 將 python3.12 換成你安裝的實際版本
-        /usr/local/bin/python3.12 -m venv venv
-        source venv/bin/activate
+        # 建置為單一檔案 (預設)
+        ./build.sh
+
+        # 或者，建置為資料夾模式
+        ./build.sh folder
         ```
+
     *   **Windows (Command Prompt)**:
         ```cmd
-        py -3.12 -m venv venv
-        venv\Scripts\activate.bat
+        rem 建置為單一檔案 (預設)
+        build.bat
+
+        rem 或者，建置為資料夾模式
+        build.bat folder
         ```
-    *   **Windows (PowerShell)**:
-        ```powershell
-        py -3.12 -m venv venv
-        .\venv\Scripts\Activate.ps1
-        ```
-    啟用成功後，你的終端機提示符前會出現 `(venv)`。
-
-3.  **安裝依賴套件**:
-    ```bash
-    pip install pyinstaller
-    ```
-
-4.  **執行打包指令**:
-
-    `PyInstaller` 提供兩種主要的打包模式：「單檔案 (One-file)」和「單資料夾 (One-folder)」。
-
-    *   **單檔案模式 (`--onefile` 或 `-F`)**：
-        *   **優點**：`dist` 資料夾中只會產生一個 `.app` (macOS) 或 `.exe` (Windows) 檔案，發佈最簡潔。
-        *   **缺點**：每次啟動時需要先解壓縮到暫存目錄，**啟動速度會較慢**。
-        *   **指令**：
-            *   **macOS 主程式**:
-                ```bash
-                pyinstaller --onefile --windowed --name "Gemini CLI Launcher" \
-                --add-data "app.icns:." \
-                --icon "app.icns" \
-                start_gemini.py
-                ```
-
-            *   **macOS 重置程式**:
-                ```bash
-                pyinstaller --onefile --windowed --name "Reset Settings" \
-                --add-data "app.icns:." \
-                --icon "app.icns" \
-                reset_settings.py
-                ```
-
-            *   **Windows 主程式**:
-                ```cmd
-                pyinstaller --onefile --windowed --name "Gemini CLI Launcher" ^
-                --add-data "app.ico;." ^
-                --icon "app.ico" ^
-                start_gemini.py
-                ```
-
-            *   **Windows 重置程式**:
-                ```cmd
-                pyinstaller --onefile --windowed --name "Reset Settings" ^
-                --add-data "app.ico;." ^
-                --icon "app.ico" ^
-                reset_settings.py
-                ```
-
-    *   **單資料夾模式 (`--onedir` 或 `-D`)**：
-        *   **優點**：應用程式啟動速度快，因為所有資源都已在資料夾中，無需解壓縮。
-        *   **缺點**：`dist` 資料夾中會產生一個 `.app` (macOS) 或資料夾 (Windows) 和一個同名的資料夾。分發時需要將 `.app` 或 `.exe` 和該資料夾一起提供。
-        *   **指令**：
-            *   **macOS 主程式**:
-                ```bash
-                pyinstaller --onedir --windowed --name "Gemini CLI Launcher" \
-                --add-data "app.icns:." \
-                --icon "app.icns" \
-                start_gemini.py
-                ```
-
-            *   **macOS 重置程式**:
-                ```bash
-                pyinstaller --onedir --windowed --name "Reset Settings" \
-                --add-data "app.icns:." \
-                --icon "app.icns" \
-                reset_settings.py
-                ```
-
-            *   **Windows 主程式**:
-                ```cmd
-                pyinstaller --onedir --windowed --name "Gemini CLI Launcher" ^
-                --add-data "app.ico;." ^
-                --icon "app.ico" ^
-                start_gemini.py
-                ```
-
-            *   **Windows 重置程式**:
-                ```cmd
-                pyinstaller --onedir --windowed --name "Reset Settings" ^
-                --add-data "app.ico;." ^
-                --icon "app.ico" ^
-                reset_settings.py
-                ```
-
-    **建議**：如果對啟動速度有要求，建議使用「單資料夾模式」。如果追求發佈的簡潔性，則使用「單檔案模式」。
 
 5.  **完成**!
-    建置完成後，你可以在 `dist` 資料夾中找到 `Gemini CLI Launcher.app` (macOS) / `Gemini CLI Launcher.exe` (Windows) 和 `Reset Settings.app` (macOS) / `Reset Settings.exe` (Windows) 這兩個應用程式。
-    *   如果使用「單檔案模式」，`dist` 資料夾中只會有 `.app` 或 `.exe` 檔案。
-    *   如果使用「單資料夾模式」，`dist` 資料夾中會同時有 `.app` 或 `.exe` 檔案和同名的資料夾，分發時請務必將兩者一起提供。
+    建置完成後，你可以在 `dist` 資料夾中找到 `Gemini CLI Launcher` 和 `Reset Settings` 這兩個應用程式。
 
 ## 使用方式
 
