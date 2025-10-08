@@ -88,7 +88,7 @@ nvm --version
 
 1.  **Clone 專案**:
     ```bash
-git clone git@github.com:lalame888/gemini-cli-launcher.git
+    git clone git@github.com:lalame888/gemini-cli-launcher.git
     cd gemini-cli-launcher
     ```
 
@@ -114,7 +114,7 @@ git clone git@github.com:lalame888/gemini-cli-launcher.git
 
 3.  **安裝依賴套件**:
     ```bash
-pip install pyinstaller
+    pip install pyinstaller
     ```
 
 4.  **執行打包指令**:
@@ -137,24 +137,24 @@ pip install pyinstaller
             *   **macOS 重置程式**:
                 ```bash
                 pyinstaller --onefile --windowed --name "Reset Settings" \
+                --add-data "app.icns:." \
                 --icon "app.icns" \
                 reset_settings.py
                 ```
 
             *   **Windows 主程式**:
                 ```cmd
-                pyinstaller --onefile --windowed --name "Gemini CLI Launcher" \
-                --add-data "run_gemini_logic.bat;." \
-                --add-data "app.ico;." \
-                --icon "app.ico" \
+                pyinstaller --onefile --windowed --name "Gemini CLI Launcher" ^
+                --add-data "app.ico;." ^
+                --icon "app.ico" ^
                 start_gemini.py
                 ```
-                *(注意：Windows 需要 `.ico` 圖示檔案和 `.bat` 腳本，且 `add-data` 的分隔符是 `;` 而非 `:`)。
 
             *   **Windows 重置程式**:
                 ```cmd
-                pyinstaller --onefile --windowed --name "Reset Settings" \
-                --icon "app.ico" \
+                pyinstaller --onefile --windowed --name "Reset Settings" ^
+                --add-data "app.ico;." ^
+                --icon "app.ico" ^
                 reset_settings.py
                 ```
 
@@ -174,24 +174,24 @@ pip install pyinstaller
             *   **macOS 重置程式**:
                 ```bash
                 pyinstaller --onedir --windowed --name "Reset Settings" \
+                --add-data "app.icns:." \
                 --icon "app.icns" \
                 reset_settings.py
                 ```
 
             *   **Windows 主程式**:
                 ```cmd
-                pyinstaller --onedir --windowed --name "Gemini CLI Launcher" \
-                --add-data "run_gemini_logic.bat;." \
-                --add-data "app.ico;." \
-                --icon "app.ico" \
+                pyinstaller --onedir --windowed --name "Gemini CLI Launcher" ^
+                --add-data "app.ico;." ^
+                --icon "app.ico" ^
                 start_gemini.py
                 ```
-                *(注意：Windows 需要 `.ico` 圖示檔案和 `.bat` 腳本，且 `add-data` 的分隔符是 `;` 而非 `:`)。
 
             *   **Windows 重置程式**:
                 ```cmd
-                pyinstaller --onedir --windowed --name "Reset Settings" \
-                --icon "app.ico" \
+                pyinstaller --onedir --windowed --name "Reset Settings" ^
+                --add-data "app.ico;." ^
+                --icon "app.ico" ^
                 reset_settings.py
                 ```
 
