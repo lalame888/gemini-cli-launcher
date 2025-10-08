@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Python virtual environment
+/venv/
+
+# PyInstaller
+/build/
+/dist/
+/*.spec
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
