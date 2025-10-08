@@ -13,17 +13,67 @@
 
 本專案會產生兩個獨立的 macOS 應用程式：
 
-1.  **`Gemini CLI Launcher.app`**:
+1.  **`Gemini CLI Launcher.app`**: 
     *   提供圖形化介面，讓使用者設定 `nvm` 版本和 `gemini` 專案目錄。
     *   可儲存設定，並提供「下次不再詢問」的選項，實現快速啟動。
     *   自動產生並執行 Shell 腳本，在新終端機視窗中完成環境設定並啟動 `gemini`。
 
-2.  **`Reset Settings.app`**:
+2.  **`Reset Settings.app`**: 
     *   提供一個簡單、直覺的方式來刪除已儲存的設定。
     *   使用者點擊後，會彈出確認視窗，同意後即可將所有設定恢復到預設狀態。
 
-## 系統與建置需求 (macOS Only)
+## 核心技術簡介
 
+本專案主要圍繞以下核心技術：
+
+### Gemini CLI
+
+**Gemini CLI** 是一個命令列介面工具，本啟動器旨在簡化其在特定 Node.js 環境下的啟動流程。
+
+**如何安裝 Gemini CLI**：
+
+請使用以下指令全域安裝 Gemini CLI：
+
+```bash
+sudo npm install -g @google/gemini-cli
+```
+
+### NVM (Node Version Manager)
+
+**NVM (Node Version Manager)** 是一個用於管理多個 Node.js 版本的工具。它允許你在不同的專案之間輕鬆切換 Node.js 版本，確保開發環境的隔離與穩定。
+
+**如何安裝 NVM**：
+
+請依照以下步驟安裝 NVM：
+
+1.  **執行安裝腳本**：
+    打開你的終端機並執行以下指令。這個腳本會從 NVM 的 GitHub 倉庫下載並執行安裝腳本。
+    ```bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    ```
+    或者使用 `wget`：
+    ```bash
+    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    ```
+    *(請注意：`v0.39.7` 是撰寫本文時的穩定版本，你可以訪問 [NVM 官方 GitHub 頁面](https://github.com/nvm-sh/nvm) 查看最新版本。)*
+
+2.  **設定 Shell 環境**：
+    安裝腳本會嘗試自動修改你的 shell 設定檔 (例如 `~/.zshrc`, `~/.bash_profile`, `~/.profile` 或 `~/.bashrc`)。安裝完成後，請**關閉並重新開啟你的終端機**，或者手動執行以下指令來載入 NVM：
+    ```bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # 這會載入 nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # 這會載入 nvm 的 bash 自動補齊功能
+    ```
+    請確認你的 shell 設定檔中包含了類似上述的行，以確保每次開啟終端機時 NVM 都能正確載入。
+
+3.  **驗證安裝**：
+    要確認 NVM 是否已正確安裝，請執行以下指令：
+    ```bash
+    nvm --version
+    ```
+    如果顯示版本號，則表示安裝成功。如果看到「command not found」，請確保你已正確設定並載入 shell 設定檔。
+
+## 系統與建置需求 (macOS Only)
 在開始之前，請確保你的系統已安裝以下軟體：
 
 1.  **作業系統**: macOS 13 (Ventura) 或更高版本。
