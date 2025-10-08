@@ -20,8 +20,35 @@ CONFIG_FILE = os.path.join(CONFIG_DIR, "config.json")
 
 # --- 設定管理 ---
 
+def _get_nvm_default_node_version():
+    """嘗試從 NVM/NVM-Windows 獲取預設的 Node.js 版本"""
+    try:
+        if sys.platform == 'win32':
+            # Windows (nvm-windows)
+            result = subprocess.run(["cmd.exe", "/c", "nvm current"], capture_output=True, text=True, check=True)
+            output = result.stdout.strip()
+            if output and output != "none":
+                # nvm-windows 的 current 輸出可能是 "v16.14.0 (Current)" 或 "16.14.0"
+                # 我們只需要版本號
+                return output.split(' ')[0].replace('v', '')
+        else:
+            # macOS/Linux (nvm)
+            # 使用 login shell 確保 nvm 環境已載入
+            command = 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && nvm current'
+            result = subprocess.run(["/bin/bash", "-l", "-c", command], capture_output=True, text=True, check=True)
+            output = result.stdout.strip()
+            if output and output != "none":
+                # nvm 的 current 輸出可能是 "v16.14.0" 或 "16.14.0"
+                return output.replace('v', '')
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        # NVM 未安裝或指令執行失敗
+        pass
+    return None # 預設回退值改為 None
+
 def get_default_config():
     """回傳一個預設的設定字典"""
+    default_gemini_dir = "" # 初始化變數
+    default_node_version = _get_nvm_default_node_version() # 初始化變數
     # 判斷是否為 PyInstaller 打包的應用程式
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
         # PyInstaller 打包的應用程式
@@ -34,8 +61,8 @@ def get_default_config():
         default_gemini_dir = os.path.dirname(os.path.abspath(__file__))
 
     return {
-        "use_nvm": True,
-        "node_version": "22",
+        "use_nvm": default_node_version is not None,
+        "node_version": default_node_version,
         "gemini_directory": default_gemini_dir,
         "skip_gui": False
     }
