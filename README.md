@@ -13,12 +13,12 @@
 
 本專案會產生兩個獨立的 macOS 應用程式：
 
-1.  **`Gemini CLI Launcher.app`**: 
+1.  **`Gemini CLI Launcher.app`**:
     *   提供圖形化介面，讓使用者設定 `nvm` 版本和 `gemini` 專案目錄。
     *   可儲存設定，並提供「下次不再詢問」的選項，實現快速啟動。
     *   自動產生並執行 Shell 腳本，在新終端機視窗中完成環境設定並啟動 `gemini`。
 
-2.  **`Reset Settings.app`**: 
+2.  **`Reset Settings.app`**:
     *   提供一個簡單、直覺的方式來刪除已儲存的設定。
     *   使用者點擊後，會彈出確認視窗，同意後即可將所有設定恢復到預設狀態。
 
@@ -36,9 +36,9 @@
 
 請依照以下步驟來打包產生兩個 `.app` 應用程式：
 
-1.  **Clone 專案** (如果是在 Git 倉庫中):
+1.  **Clone 專案**:
     ```bash
-    git clone [your-repo-url]
+    git clone git@github.com:lalame888/gemini-cli-launcher.git
     cd gemini_cli_gen/cli_py
     ```
 
@@ -81,3 +81,7 @@
 -   將 `dist` 資料夾中的兩個 `.app` 檔案複製到你喜歡的任何位置 (例如「應用程式」資料夾)。
 -   執行 `Gemini CLI Launcher.app` 來進行設定或啟動。
 -   如果需要恢復預設設定，執行 `Reset Settings.app` 即可。
+
+## 授權
+
+本專案採用 MIT License 授權 - 詳細內容請參閱 [LICENSE](LICENSE) 檔案。
