@@ -57,24 +57,55 @@
     ```
 
 4.  **執行打包指令**:
-    *   **打包主程式**:
-        ```bash
-        pyinstaller --onefile --windowed --name "Gemini CLI Launcher" \
-        --add-data "run_gemini_logic.sh:." \
-        --add-data "app.icns:." \
-        --icon "app.icns" \
-        start_gemini.py
-        ```
 
-    *   **打包重置程式**:
-        ```bash
-        pyinstaller --onefile --windowed --name "Reset Settings" \
-        --icon "app.icns" \
-        reset_settings.py
-        ```
+    `PyInstaller` 提供兩種主要的打包模式：「單檔案 (One-file)」和「單資料夾 (One-folder)」。
+
+    *   **單檔案模式 (`--onefile` 或 `-F`)**：
+        *   **優點**：`dist` 資料夾中只會產生一個 `.app` 檔案，發佈最簡潔。
+        *   **缺點**：每次啟動時需要先解壓縮到暫存目錄，**啟動速度會較慢**。
+        *   **指令**：
+            *   **打包主程式**:
+                ```bash
+                pyinstaller --onefile --windowed --name "Gemini CLI Launcher" \
+                --add-data "run_gemini_logic.sh:." \
+                --add-data "app.icns:." \
+                --icon "app.icns" \
+                start_gemini.py
+                ```
+
+            *   **打包重置程式**:
+                ```bash
+                pyinstaller --onefile --windowed --name "Reset Settings" \
+                --icon "app.icns" \
+                reset_settings.py
+                ```
+
+    *   **單資料夾模式 (`--onedir` 或 `-D`)**：
+        *   **優點**：應用程式啟動速度快，因為所有資源都已在資料夾中，無需解壓縮。
+        *   **缺點**：`dist` 資料夾中會產生一個 `.app` 檔案和一個同名的資料夾。分發時需要將 `.app` 和該資料夾一起提供。
+        *   **指令**：
+            *   **打包主程式**:
+                ```bash
+                pyinstaller --onedir --windowed --name "Gemini CLI Launcher" \
+                --add-data "run_gemini_logic.sh:." \
+                --add-data "app.icns:." \
+                --icon "app.icns" \
+                start_gemini.py
+                ```
+
+            *   **打包重置程式**:
+                ```bash
+                pyinstaller --onedir --windowed --name "Reset Settings" \
+                --icon "app.icns" \
+                reset_settings.py
+                ```
+
+    **建議**：如果對啟動速度有要求，建議使用「單資料夾模式」。如果追求發佈的簡潔性，則使用「單檔案模式」。
 
 5.  **完成**!
     建置完成後，你可以在 `dist` 資料夾中找到 `Gemini CLI Launcher.app` 和 `Reset Settings.app` 這兩個應用程式。
+    *   如果使用「單檔案模式」，`dist` 資料夾中只會有 `.app` 檔案。
+    *   如果使用「單資料夾模式」，`dist` 資料夾中會同時有 `.app` 檔案和同名的資料夾，分發時請務必將兩者一起提供。
 
 ## 使用方式
 
