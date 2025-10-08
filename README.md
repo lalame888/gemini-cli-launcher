@@ -39,7 +39,7 @@
 1.  **Clone 專案**:
     ```bash
     git clone git@github.com:lalame888/gemini-cli-launcher.git
-    cd gemini_cli_gen/cli_py
+    cd gemini-cli-launcher
     ```
 
 2.  **建立並啟用 Python 虛擬環境**:
