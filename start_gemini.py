@@ -4,6 +4,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile # 新增這一行
 
 # --- 常數設定 ---
 import sys
@@ -14,8 +15,8 @@ if sys.platform == 'win32':
 else:
     CONFIG_DIR = os.path.expanduser("~/.config/gemini_cli_launcher")
 CONFIG_FILE = os.path.join(CONFIG_DIR, "config.json")
-# Shell 腳本的路徑保持不變
-SHELL_SCRIPT_PATH = "/Users/lala.huang/Documents/projects/lala/gemini_cli/run_gemini_logic.sh"
+
+# SHELL_SCRIPT_PATH 已移除，改用臨時檔案
 
 # --- 設定管理 ---
 
@@ -59,7 +60,7 @@ def generate_and_run_script(config):
     if sys.platform == 'win32':
         # Windows 邏輯
         batch_lines = []
-        batch_lines.append(f"cd /d "{gemini_dir}"") # /d 參數用於切換不同磁碟機
+        batch_lines.append(f"cd /d \"{gemini_dir}\"" ) # /d 參數用於切換不同磁碟機
 
         if config.get("use_nvm", False):
             node_version = config["node_version"]
@@ -78,7 +79,7 @@ def generate_and_run_script(config):
                 f.write("\n".join(batch_lines))
             
             # 使用 start 命令在新的 CMD 視窗中執行批次檔
-            subprocess.Popen(f"start cmd.exe /k "{batch_script_path}"", shell=True)
+            subprocess.Popen(f"start cmd.exe /k \"{batch_script_path}\"", shell=True)
             
         except IOError as e:
             messagebox.showerror("腳本錯誤", f"無法寫入或執行 Batch 腳本: {e}")
@@ -86,7 +87,7 @@ def generate_and_run_script(config):
             messagebox.showerror("未知錯誤", f"發生預期外的錯誤: {e}")
 
     else:
-        # macOS/Linux 邏輯 (保持不變)
+        # macOS/Linux 邏輯
         script_lines = ["#!/bin/bash"]
         
         if config.get("use_nvm", False):
@@ -106,18 +107,19 @@ def generate_and_run_script(config):
             'echo "--- Gemini CLI exited. Press Enter to close this terminal. ---"',
             'read' # 等待使用者按 Enter
         ])
+        script_lines.append('rm "$0"' ) # 腳本執行完畢後自我刪除
         
         script_content = "\n".join(script_lines)
 
-        # 這裡的 SHELL_SCRIPT_PATH 仍然指向 macOS 的 .sh 檔案
-        # 但在 Windows 邏輯中，我們不再使用它
+        # 使用臨時檔案來寫入和執行腳本
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, encoding='utf-8', suffix='.sh') as temp_script:
+            temp_script.write(script_content)
+            temp_script_path = temp_script.name
+        
         try:
-            with open(SHELL_SCRIPT_PATH, 'w', encoding='utf-8') as f:
-                f.write(script_content)
-            
-            os.chmod(SHELL_SCRIPT_PATH, 0o755)
+            os.chmod(temp_script_path, 0o755) # 賦予執行權限
 
-            applescript_command = f'tell application "Terminal" to do script "{os.path.abspath(SHELL_SCRIPT_PATH)}"'
+            applescript_command = f'tell application "Terminal" to do script "{os.path.abspath(temp_script_path)}"'
             subprocess.run(["osascript", "-e", applescript_command], check=True)
             
         except IOError as e:
