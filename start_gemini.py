@@ -22,10 +22,21 @@ CONFIG_FILE = os.path.join(CONFIG_DIR, "config.json")
 
 def get_default_config():
     """回傳一個預設的設定字典"""
+    # 判斷是否為 PyInstaller 打包的應用程式
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        # PyInstaller 打包的應用程式
+        # 從 sys.executable (例如 .../AppName.app/Contents/MacOS/AppName) 向上追溯到 .app 所在的目錄
+        app_path = os.path.dirname(os.path.dirname(os.path.dirname(sys.executable)))
+        # 再向上追溯一層，得到 dist 目錄
+        default_gemini_dir = os.path.dirname(app_path)
+    else:
+        # 未打包的 Python 腳本
+        default_gemini_dir = os.path.dirname(os.path.abspath(__file__))
+
     return {
         "use_nvm": True,
         "node_version": "22",
-        "gemini_directory": "/Users/lala.huang/Documents/projects",
+        "gemini_directory": default_gemini_dir,
         "skip_gui": False
     }
 

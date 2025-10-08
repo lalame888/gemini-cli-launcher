@@ -128,7 +128,6 @@ sudo npm install -g @google/gemini-cli
             *   **macOS 主程式**:
                 ```bash
                 pyinstaller --onefile --windowed --name "Gemini CLI Launcher" \
-                --add-data "run_gemini_logic.sh:." \
                 --add-data "app.icns:." \
                 --icon "app.icns" \
                 start_gemini.py
@@ -165,7 +164,6 @@ sudo npm install -g @google/gemini-cli
             *   **macOS 主程式**:
                 ```bash
                 pyinstaller --onedir --windowed --name "Gemini CLI Launcher" \
-                --add-data "run_gemini_logic.sh:." \
                 --add-data "app.icns:." \
                 --icon "app.icns" \
                 start_gemini.py
