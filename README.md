@@ -146,11 +146,11 @@
 
     *   **產生應用程式 (預設, onefile)**:
         ```cmd
-        build.bat
+        .\build.bat
         ```
     *   **產生應用程式 (folder 模式)**:
         ```cmd
-        build.bat folder
+        .\build.bat folder
         ```
 
 

@@ -21,29 +21,30 @@ CONFIG_FILE = os.path.join(CONFIG_DIR, "config.json")
 # --- 設定管理 ---
 
 def _get_nvm_default_node_version():
-    """嘗試從 NVM/NVM-Windows 獲取預設的 Node.js 版本"""
+    """嘗試從 NVM/NVM-Windows 獲取預設的 Node.js 版本(透過檔案系統檢查)"""
     try:
         if sys.platform == 'win32':
-            # Windows (nvm-windows)
-            result = subprocess.run(["cmd.exe", "/c", "nvm current"], capture_output=True, text=True, check=True)
-            output = result.stdout.strip()
-            if output and output != "none":
-                # nvm-windows 的 current 輸出可能是 "v16.14.0 (Current)" 或 "16.14.0"
-                # 我們只需要版本號
-                return output.split(' ')[0].replace('v', '')
+            # 在 Windows 上，我們透過讀取 NVM 的 symlink 來判斷當前版本，避免直接執行 nvm 指令
+            nvm_symlink = os.getenv('NVM_SYMLINK')
+            # NVM_SYMLINK 通常是 C:\\Program Files\\nodejs
+            if nvm_symlink and os.path.islink(nvm_symlink):
+                target_path = os.readlink(nvm_symlink)
+                # target_path 可能是 'C:\\Users\\user\\AppData\\Roaming\\nvm\\v20.11.0'
+                version = os.path.basename(target_path).replace('v', '')
+                if version:
+                    return version
         else:
             # macOS/Linux (nvm)
-            # 使用 login shell 確保 nvm 環境已載入
+            # 維持原有的 shell 指令方式，因為它在這些系統上是可靠的
             command = 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && nvm current'
             result = subprocess.run(["/bin/bash", "-l", "-c", command], capture_output=True, text=True, check=True)
             output = result.stdout.strip()
             if output and output != "none":
-                # nvm 的 current 輸出可能是 "v16.14.0" 或 "16.14.0"
                 return output.replace('v', '')
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        # NVM 未安裝或指令執行失敗
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError):
+        # 忽略所有可能的錯誤 (指令失敗、檔案找不到、權限問題等)
         pass
-    return None # 預設回退值改為 None
+    return None # 預設回退值為 None
 
 def get_default_config():
     """回傳一個預設的設定字典"""
@@ -97,7 +98,7 @@ def generate_and_run_script(config):
 
     if sys.platform == 'win32':
         # Windows 邏輯
-        batch_lines = []
+        batch_lines = ["@echo off", "chcp 65001 > nul"] # 修正編碼問題並關閉指令回顯
         batch_lines.append(f"cd /d \"{gemini_dir}\"" ) # /d 參數用於切換不同磁碟機
 
         if config.get("use_nvm", False):
@@ -233,28 +234,48 @@ class ConfigApp:
             self.gemini_directory.set(directory)
 
     def _validate_nvm(self):
-        """驗證 NVM 及 Node 版本是否存在"""
+        """驗證 NVM 及 Node 版本是否存在 (透過檔案系統檢查)"""
         node_version_to_check = self.node_version.get()
         if not node_version_to_check:
             messagebox.showerror("缺少版本", "請輸入要使用的 Node.js 版本。")
             return False
 
-        # 1. 檢查 NVM 是否安裝
-        nvm_check_cmd = 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && command -v nvm'
-        result = subprocess.run(['/bin/bash', '-l', '-c', nvm_check_cmd], capture_output=True, text=True)
-        if result.returncode != 0 or not result.stdout.strip():
-            install_cmd = "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"
-            messagebox.showerror("NVM 未安裝", f"找不到 NVM。請先安裝 NVM。\n\n建議安裝指令:\n{install_cmd}")
-            return False
+        if sys.platform == 'win32':
+            # 在 Windows 上，我們透過檢查環境變數和資料夾是否存在來驗證，避免直接執行 nvm 指令
+            nvm_home = os.getenv('NVM_HOME')
+            if not nvm_home or not os.path.isdir(nvm_home):
+                messagebox.showerror("NVM 未安裝", "找不到 NVM for Windows。請檢查 NVM_HOME 環境變數是否已設定且指向正確的 nvm 安裝目錄。")
+                return False
 
-        # 2. 檢查 Node 版本是否已安裝
-        node_version_check_cmd = f'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && nvm ls {node_version_to_check}'
-        result = subprocess.run(['/bin/bash', '-l', '-c', node_version_check_cmd], capture_output=True, text=True)
-        # 如果 nvm ls 的回傳不是 0，代表該版本不存在
-        if result.returncode != 0:
-            install_cmd = f"nvm install {node_version_to_check}"
-            messagebox.showerror("Node 版本未安裝", f"NVM 中找不到 Node.js 版本: {node_version_to_check}。\n\n建議安裝指令:\n{install_cmd}")
-            return False
+            # 檢查指定的 Node 版本資料夾是否存在
+            # nvm-windows 的版本資料夾通常不帶 'v'，例如 '18.12.1'
+            node_dir_with_v = os.path.join(nvm_home, f'v{node_version_to_check}')
+            node_dir_without_v = os.path.join(nvm_home, node_version_to_check)
+            
+            if not os.path.isdir(node_dir_with_v) and not os.path.isdir(node_dir_without_v):
+                install_cmd = f"nvm install {node_version_to_check}"
+                messagebox.showerror(
+                    "Node 版本未安裝", 
+                    f"NVM 中找不到 Node.js 版本: {node_version_to_check}。\n\n"
+                    f"請確認 {node_dir_with_v} 或 {node_dir_without_v} 資料夾存在。\n\n"
+                    f"建議安裝指令:\n{install_cmd}"
+                )
+                return False
+        else:
+            # macOS/Linux 驗證邏輯 (維持不變)
+            nvm_check_cmd = 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && command -v nvm'
+            result = subprocess.run(['/bin/bash', '-l', '-c', nvm_check_cmd], capture_output=True, text=True)
+            if result.returncode != 0 or not result.stdout.strip():
+                install_cmd = "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"
+                messagebox.showerror("NVM 未安裝", f"找不到 NVM。請先安裝 NVM。\n\n建議安裝指令:\n{install_cmd}")
+                return False
+
+            node_version_check_cmd = f'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && nvm ls {node_version_to_check}'
+            result = subprocess.run(['/bin/bash', '-l', '-c', node_version_check_cmd], capture_output=True, text=True)
+            if 'N/A' in result.stdout:
+                install_cmd = f"nvm install {node_version_to_check}"
+                messagebox.showerror("Node 版本未安裝", f"NVM 中找不到 Node.js 版本: {node_version_to_check}。\n\n建議安裝指令:\n{install_cmd}")
+                return False
             
         return True
 

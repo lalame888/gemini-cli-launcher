@@ -10,9 +10,6 @@ set "PYINSTALLER_FLAG=--onefile"
 if /i "%1" == "folder" (
     set "BUILD_TYPE=onedir"
     set "PYINSTALLER_FLAG=--onedir"
-    echo -- Build mode: folder (onedir) --
-) else (
-    echo -- Build mode: single file (onefile) --
 )
 
 echo --- Starting application build process ---
