@@ -303,6 +303,19 @@ class ConfigApp:
         generate_and_run_script(self.config)
 
 
+# --- 輔助函式 ---
+
+def resource_path(relative_path):
+    """ 獲取資源的絕對路徑，適用於開發環境和 PyInstaller """
+    try:
+        # PyInstaller 建立一個臨時資料夾並將路徑儲存在 _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 # --- 主程式入口 ---
 
 def main():
@@ -315,6 +328,14 @@ def main():
     else:
         # 啟動 Tkinter GUI
         root = tk.Tk()
+        
+        # 設定視窗圖示
+        try:
+            icon_path = resource_path("app.ico")
+            root.iconbitmap(icon_path)
+        except tk.TclError:
+            print("Warning: Could not load application icon.") # 如果找不到圖示，只在主控台印出警告
+
         app = ConfigApp(root, config)
         root.mainloop()
 

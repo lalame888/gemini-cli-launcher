@@ -3,6 +3,12 @@
 
 這是一個圖形化啟動器 (GUI Launcher)，用來簡化啟動 `gemini` 命令列工具的流程，支援 macOS 和 Windows 作業系統。
 
+## 這個工具解決了什麼問題？
+
+如果您厭倦了每次啟動 `gemini` 指令前，都需要手動打開終端機、透過 `nvm use <version>` 切換 Node.js 版本，然後再 `cd` 到專案目錄的繁瑣流程，那麼這個工具就是為您設計的。
+
+本專案提供一個圖形介面，讓您一次性設定好所需環境，之後便可一鍵啟動，大幅簡化您的日常工作流程。
+
 ## 前提條件 (Prerequisites)
 
 在開始之前，請確認您的系統已具備以下環境。本工具是為已有 `nvm` 和 `gemini-cli` 使用經驗的使用者設計的輔助工具。
@@ -81,19 +87,28 @@
 
 1.  **下載最新版本**
     *   請前往本專案的 **[Releases 頁面](https://github.com/lalame888/gemini-cli-launcher/releases)**。
-    *   在最新的版本中，下載 `Gemini CLI Launcher.dmg` 和 `Reset Settings.dmg` 檔案。
 
 2.  **進行安裝**
-    *   雙擊打開下載的 `.dmg` 檔案。
-    *   在彈出的視窗中，將應用程式圖示拖曳到「應用程式」(Applications) 資料夾的捷徑上。
-    *   安裝完成！您現在可以從「應用程式」資料夾中啟動它。
 
-## 使用方式
+    *   **Windows**:
+        1.  在最新的版本中，下載 `Gemini-CLI-Launcher-Setup-vX.X.X.exe` 檔案。
+        2.  執行下載的 `.exe` 檔案，並依照安裝程式的指示完成安裝。
+        3.  安裝完成後，您可以從「開始」功能表或桌面捷徑啟動 `Gemini CLI Launcher`。
 
--   從您的「應用程式」資料夾中，執行 `Gemini CLI Launcher` 來進行設定或啟動。
--   如果需要恢復預設設定，執行 `Reset Settings` 即可。
+    *   **macOS**:
+        1.  在最新的版本中，下載 `Gemini-CLI-Launcher.dmg` 檔案。
+        2.  雙擊打開下載的 `.dmg` 檔案。
+        3.  在彈出的視窗中，將 `Gemini CLI Launcher` 圖示拖曳到「應用程式」(Applications) 資料夾的捷徑上。
+        4.  安裝完成！您現在可以從「應用程式」資料夾中啟動它。
 
+3.  **首次設定**
+    *   第一次執行 `Gemini CLI Launcher` 時，請在圖形介面中設定您要使用的 Node.js 版本和 `gemini` 專案所在的目錄。
+    *   如果您希望未來跳過此設定畫面直接執行，可以勾選「下次不再詢問，直接執行」。
 
+4.  **重設設定**
+    *   如果您需要修改或清除設定，可以執行與主程式一同安裝的 `Reset Settings` 應用程式。
+
+---
 
 ## 開發者：如何從原始碼建置
 
@@ -104,18 +119,20 @@
 1.  **作業系統**:
     *   macOS 13 (Ventura) 或更高版本。
     *   Windows 10 或更高版本。
-2.  **Python 3.12 (或更高版本)**：
-    *   **macOS**：**強烈建議**從 [Python 官方網站](https://www.python.org/downloads/macos/) 下載並安裝。這會確保你安裝的是與 macOS GUI 工具鏈最相容的「框架建置 (Framework Build)」版本。
-    *   **Windows**：從 [Python 官方網站](https://www.python.org/downloads/windows/) 下載並安裝。安裝時請務必勾選「Add Python to PATH」選項。
-    *   **確認安裝**：你可以在終端機/命令提示字元中執行 `python3 --version` (macOS/Linux) 或 `py --version` (Windows) 來確認 Python 3 是否已安裝並在 PATH 中。
-3.  **Node Version Manager (nvm)** (macOS/Linux) 或 **NVM-Windows** (Windows)：
-    *   macOS/Linux：請參考 [nvm 的官方說明](https://github.com/nvm-sh/nvm) 進行安裝。
-    *   Windows：請參考 [nvm-windows 的官方說明](https://github.com/coreybutler/nvm-windows) 進行安裝。
-4.  **Node.js**：請透過 `nvm` 或 `nvm-windows` 安裝你需要的 Node.js 版本 (例如 `nvm install 22`)。
+2.  **Python 3.12+**:
+    *   從 [Python 官方網站](https://www.python.org/) 下載並安裝。
+    *   **Windows**: 安裝時請務必勾選「Add Python to PATH」。
+    *   **macOS**: 建議安裝官網的「Framework Build」版本。
+3.  **NVM / NVM-Windows**:
+    *   macOS/Linux：請參考 [nvm 的官方說明](https://github.com/nvm-sh/nvm)。
+    *   Windows：請參考 [nvm-windows 的官方說明](https://github.com/coreybutler/nvm-windows)。
+4.  **(Windows Installer)** **Inno Setup**:
+    *   若要在 Windows 上打包成 `.exe` 安裝檔，您必須安裝 [Inno Setup](https://jrsoftware.org/isinfo.php)。
+    *   安裝時請務必勾選「將 Inno Setup 安裝目錄加到環境變數 PATH」。
+5.  **(macOS Installer)** **create-dmg**:
+    *   若要在 macOS 上打包成 `.dmg` 安裝檔，您必須先安裝 `create-dmg` (`brew install create-dmg`)。
 
 ### 建置流程
-
-本專案提供一個自動化腳本，可以簡化從原始碼建置的流程。
 
 1.  **Clone 專案**:
     ```bash
@@ -123,36 +140,32 @@
     cd gemini-cli-launcher
     ```
 
-2.  **執行打包腳本**:
+2.  **執行建置腳本**:
     腳本會自動建立虛擬環境、安裝依賴並打包應用程式。
 
-    #### macOS/Linux
-    
-    *   **產生應用程式 (預設, onefile)**:
+    *   **Windows (使用 Command Prompt 或 PowerShell)**:
+        ```cmd
+        rem 建置單一的 .exe 執行檔 (預設)
+        .\build.bat
+
+        rem 建置資料夾形式的執行檔
+        .\build.bat folder
+
+        rem 建置資料夾形式的執行檔，並打包成 .exe 安裝檔
+        .\build.bat installer
+        ```
+
+    *   **macOS/Linux**:
         ```bash
+        # 建置 .app 應用程式 (預設)
         ./build.sh
-        ```
-    *   **產生應用程式 (folder 模式)**:
-        ```bash
+
+        # 建置資料夾形式的應用程式
         ./build.sh folder
-        ```
-    *   **產生 macOS 安裝檔 (.dmg)**:
-        需要先安裝 `create-dmg` (`brew install create-dmg`)。
-        ```bash
+
+        # 建置 .dmg 安裝檔
         ./build.sh dmg
         ```
-
-    #### Windows (Command Prompt)
-
-    *   **產生應用程式 (預設, onefile)**:
-        ```cmd
-        .\build.bat
-        ```
-    *   **產生應用程式 (folder 模式)**:
-        ```cmd
-        .\build.bat folder
-        ```
-
 
 ## 授權
 
