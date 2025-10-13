@@ -1,7 +1,7 @@
 # Gemini CLI Launcher
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-blue.svg)
 
-這是一個圖形化啟動器 (GUI Launcher)，用來簡化啟動 `gemini` 命令列工具的流程，支援 macOS 和 Windows 作業系統。
+<p>這是一個圖形化啟動器 (GUI Launcher)，用來簡化啟動 `gemini` 命令列工具的流程，支援 macOS 和 Windows 作業系統。</p>
 <img width="328" height="358" alt="截圖 2025-10-13 下午3 59 24" src="https://github.com/user-attachments/assets/285c60a9-3c18-4425-9509-c1c4df34ace6" />
 
 ## 這個工具解決了什麼問題？
