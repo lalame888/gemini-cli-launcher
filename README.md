@@ -30,12 +30,17 @@
         > 請使用以下指令全域安裝 Gemini CLI：
         > 
         > ```bash
-        > sudo npm install -g @google/gemini-cli
+        > npm install -g @google/gemini-cli
         > ```
         </details>
 
 2.  **NVM 已安裝 (可選)**
     *   如果您的系統中需要管理多個 Node.js 版本，建議安裝 [nvm](https://github.com/nvm-sh/nvm) (macOS/Linux) 或 [nvm-windows](https://github.com/coreybutler/nvm-windows)。
+    *   請在終端機執行 `nvm -v`，如果成功顯示版本號，代表已正確安裝。
+        ```bash
+        nvm -v
+        ```
+
     *   <details>
         <summary>點此展開/收合 NVM 安裝指南</summary>
 
