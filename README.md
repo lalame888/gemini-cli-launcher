@@ -100,11 +100,10 @@
         2.  雙擊打開下載的 `.dmg` 檔案。
         3.  在彈出的視窗中，將 `Gemini CLI Launcher` 圖示拖曳到「應用程式」(Applications) 資料夾的捷徑上。
         4.  安裝完成！您現在可以從「應用程式」資料夾中啟動它。
-        5.  注意：初次打開時，需要針對應用程式點選右鍵 > 打開，這時候會跳出一個安全性的確認，點選仍要開啟，往後才能正常開啟。
+        5.  注意：初次開啟時，需要針對應用程式點選右鍵 > 打開，這時候會跳出一個安全性的確認，點選「打開」，往後才能正常開啟。
            <img width="482" height="123" alt="截圖 2025-10-13 下午3 54 20" src="https://github.com/user-attachments/assets/5c341ba2-27cf-448b-a178-8cea11cf3bb2" />
            <hr></hr>
-           <img width="296" height="438" alt="截圖 2025-10-13 下午3 51 34" src="https://github.com/user-attachments/assets/0a2b2cf1-be49-41c8-b95d-5fb97cf4e3c9" />
-
+           <img width="275" height="382" alt="截圖 2025-10-13 下午3 56 36" src="https://github.com/user-attachments/assets/9f2d3202-9ae6-4b6f-a009-8d24ac5f0945" />
 
 3.  **首次設定**
     *   第一次執行 `Gemini CLI Launcher` 時，請在圖形介面中設定您要使用的 Node.js 版本和 `gemini` 專案所在的目錄。
