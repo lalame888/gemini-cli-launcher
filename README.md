@@ -14,8 +14,28 @@
 
 在開始之前，請確認您的系統已具備以下環境。本工具是為已有 `nvm` 和 `gemini-cli` 使用經驗的使用者設計的輔助工具。
 
-1.  **NVM 已安裝**
-    *   您的系統中必須已安裝 [nvm](https://github.com/nvm-sh/nvm) (macOS/Linux) 或 [nvm-windows](https://github.com/coreybutler/nvm-windows)。
+1.  **確認 Gemini CLI 已安裝**
+    *   您必須已透過 `npm` 全域安裝了 `@google/gemini-cli`。
+    *   請在終端機執行 `gemini -v`，如果成功顯示版本號，代表已正確安裝。
+        ```bash
+        gemini -v
+        ```
+    *   <details>
+        <summary>點此展開/收合 Gemini CLI 安裝指南</summary>
+        
+        > **Gemini CLI** 是一個命令列介面工具，本啟動器旨在簡化其在特定 Node.js 環境下的啟動流程。
+        > 
+        > **如何安裝 Gemini CLI**：
+        > 
+        > 請使用以下指令全域安裝 Gemini CLI：
+        > 
+        > ```bash
+        > sudo npm install -g @google/gemini-cli
+        > ```
+        </details>
+
+2.  **NVM 已安裝 (可選)**
+    *   如果您的系統中需要管理多個 Node.js 版本，建議安裝 [nvm](https://github.com/nvm-sh/nvm) (macOS/Linux) 或 [nvm-windows](https://github.com/coreybutler/nvm-windows)。
     *   <details>
         <summary>點此展開/收合 NVM 安裝指南</summary>
 
@@ -45,22 +65,6 @@
         >nvm --version
         >```
         >如果顯示版本號，則表示安裝成功。如果看到「command not found」，請確保你已正確設定並載入 shell/環境變數。
-        </details>
-
-2.  **Gemini CLI 已安裝**
-    *   您必須已透過 `npm` 全域安裝了 `@google/gemini-cli`。
-    *   <details>
-        <summary>點此展開/收合 Gemini CLI 安裝指南</summary>
-        
-        > **Gemini CLI** 是一個命令列介面工具，本啟動器旨在簡化其在特定 Node.js 環境下的啟動流程。
-        > 
-        > **如何安裝 Gemini CLI**：
-        > 
-        > 請使用以下指令全域安裝 Gemini CLI：
-        > 
-        > ```bash
-        > sudo npm install -g @google/gemini-cli
-        > ```
         </details>
 
 ## 功能
