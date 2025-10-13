@@ -53,22 +53,36 @@ if [[ "$1" == "dmg" ]]; then
     pyinstaller --onedir --windowed --name "Reset Settings" \
         --add-data "app.icns:." --icon "app.icns" reset_settings.py
 
-    # Create DMG files
-    echo "Creating DMG for Gemini CLI Launcher..."
-    create-dmg \
-        --volname "Gemini CLI Launcher" \
-        --volicon "app.icns" \
-        --app-drop-link 600 120 \
-        "dist/Gemini CLI Launcher.dmg" \
-        "dist/Gemini CLI Launcher.app"
+    # --- Create a single DMG for both applications ---
+    echo "Creating a unified DMG for both applications..."
 
-    echo "Creating DMG for Reset Settings..."
+    # 1. Create a temporary staging directory
+    STAGING_DIR="dist/dmg_staging"
+    mkdir -p "$STAGING_DIR"
+
+    # 2. Copy both .app bundles into the staging directory
+    echo "Staging applications..."
+    cp -r "dist/Gemini CLI Launcher.app" "$STAGING_DIR/"
+    cp -r "dist/Reset Settings.app" "$STAGING_DIR/"
+
+    # 3. Create the single DMG from the staging directory
     create-dmg \
-        --volname "Reset Settings" \
-        --volicon "app.icns" \
-        --app-drop-link 600 120 \
-        "dist/Reset Settings.dmg" \
-        "dist/Reset Settings.app"
+      --volname "Gemini CLI Tools" \
+      --volicon "app.icns" \
+      --window-pos 200 120 \
+      --window-size 800 400 \
+      --icon-size 100 \
+      --icon "Gemini CLI Launcher.app" 200 190 \
+      --hide-extension "Gemini CLI Launcher.app" \
+      --icon "Reset Settings.app" 400 190 \
+      --hide-extension "Reset Settings.app" \
+      --app-drop-link 600 185 \
+      "dist/Gemini_CLI_Tools.dmg" \
+      "$STAGING_DIR"
+
+    # 4. Clean up the staging directory and old DMGs
+    rm -r "$STAGING_DIR"
+    rm -f "dist/Gemini CLI Launcher.dmg" "dist/Reset Settings.dmg"
 
     echo -e "\n\033[1;32m==================================================\033[0m"
     echo -e "\033[1;32m  ✅ DMG creation completed successfully!        \033[0m"
