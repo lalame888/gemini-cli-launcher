@@ -144,13 +144,13 @@
 
     *   **Windows (使用 Command Prompt 或 PowerShell)**:
         ```cmd
-        rem 建置單一的 .exe 執行檔 (預設)
+        # 建置單一的 .exe 執行檔 (預設)
         .\build.bat
 
-        rem 建置資料夾形式的執行檔
+        # 建置資料夾形式的執行檔
         .\build.bat folder
 
-        rem 建置資料夾形式的執行檔，並打包成 .exe 安裝檔
+        # 建置資料夾形式的執行檔，並打包成 .exe 安裝檔
         .\build.bat installer
         ```
 
