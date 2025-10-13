@@ -12,10 +12,34 @@
 
 ## 前提條件 (Prerequisites)
 
-在開始之前，請確認您的系統已具備以下環境。本工具是為已有 `nvm` 和 `gemini-cli` 使用經驗的使用者設計的輔助工具。
+在開始之前，請確認您的系統已具備以下環境。
 
-1.  **確認 Gemini CLI 已安裝**
-    *   您必須已透過 `npm` 全域安裝了 `@google/gemini-cli`。
+1.  **Node.js 環境**
+    *   您必須先安裝 Node.js。`@google/gemini-cli` 要求 **v20 或更高版本**。
+    *   請在終端機執行以下指令，確認您的版本是否符合要求：
+        ```bash
+        node -v
+        ```
+
+2.  **NVM (Node Version Manager) (建議)**
+    *   如果您需要在多個專案之間切換不同的 Node.js 版本，強烈建議安裝 [nvm](https://github.com/nvm-sh/nvm) (macOS/Linux) 或 [nvm-windows](https://github.com/coreybutler/nvm-windows) 來進行管理。
+    *   <details>
+        <summary>點此展開/收合 NVM 安裝指南</summary>
+
+        > **NVM (Node Version Manager)** 是一個用於管理多個 Node.js 版本的工具。它允許你在不同的專案之間輕鬆切換 Node.js 版本，確保開發環境的隔離與穩定。
+        >
+        >*   **macOS/Linux**：請參考 [NVM 官方 GitHub 頁面](https://github.com/nvm-sh/nvm) 上的指示進行安裝。
+        >    安裝後，請務必依照 NVM 的指示設定你的 shell 環境 (例如將 `source ~/.nvm/nvm.sh` 加入到 `.zshrc` 或 `.bash_profile`)。
+        >
+        >*   **Windows**：請參考 [NVM-Windows 官方 GitHub 頁面](https://github.com/coreybutler/nvm-windows) 上的指示進行安裝。
+        >
+        > **驗證安裝**：
+        >
+        > 要確認 NVM 是否已正確安裝，請執行 `nvm --version`。
+        </details>
+
+3.  **Gemini CLI 已安裝**
+    *   確認您已透過 `npm` 全域安裝了 `@google/gemini-cli`。
     *   請在終端機執行 `gemini -v`，如果成功顯示版本號，代表已正確安裝。
         ```bash
         gemini -v
@@ -23,8 +47,6 @@
     *   <details>
         <summary>點此展開/收合 Gemini CLI 安裝指南</summary>
         
-        > **Gemini CLI** 是一個命令列介面工具，本啟動器旨在簡化其在特定 Node.js 環境下的啟動流程。
-        > 
         > **如何安裝 Gemini CLI**：
         > 
         > 請使用以下指令全域安裝 Gemini CLI：
@@ -32,44 +54,7 @@
         > ```bash
         > npm install -g @google/gemini-cli
         > ```
-        </details>
-
-2.  **NVM 已安裝 (可選)**
-    *   如果您的系統中需要管理多個 Node.js 版本，建議安裝 [nvm](https://github.com/nvm-sh/nvm) (macOS/Linux) 或 [nvm-windows](https://github.com/coreybutler/nvm-windows)。
-    *   請在終端機執行 `nvm -v`，如果成功顯示版本號，代表已正確安裝。
-        ```bash
-        nvm -v
-        ```
-
-    *   <details>
-        <summary>點此展開/收合 NVM 安裝指南</summary>
-
-        > **NVM (Node Version Manager)** 是一個用於管理多個 Node.js 版本的工具。它允許你在不同的專案之間輕鬆切換 Node.js 版本，確保開發環境的隔離與穩定。
-        >
-        >*   **macOS/Linux**：請參考 [NVM 官方 GitHub 頁面](https://github.com/nvm-sh/nvm) 上的指示進行安裝。通常會是類似以下的指令：
-        >    ```bash
-        >    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-        >    ```
-        >    或者使用 `wget`：
-        >    ```bash
-        >    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-        >    ```
-        >    *(請注意：`v0.39.7` 是撰寫本文時的穩定版本，你可以訪問 [NVM 官方 GitHub 頁面](https://github.com/nvm-sh/nvm) 查看最新版本。)*
-        >
-        >    安裝後，請務必依照 NVM 的指示設定你的 shell 環境 (例如將 `source ~/.nvm/nvm.sh` 加入到 `.zshrc` 或 `.bash_profile`)。
-        >
-        >*   **Windows**：請參考 [NVM-Windows 官方 GitHub 頁面](https://github.com/coreybutler/nvm-windows) 上的指示進行安裝。
-        >
-        >    安裝後，請確保 `nvm` 指令在你的命令提示字元或 PowerShell 中可用。
-        >
-        >**驗證安裝**：
-        >
-        >要確認 NVM/NVM-Windows 是否已正確安裝，請執行以下指令：
-        >
-        >```bash
-        >nvm --version
-        >```
-        >如果顯示版本號，則表示安裝成功。如果看到「command not found」，請確保你已正確設定並載入 shell/環境變數。
+        > **注意**：在 macOS 或 Linux 上，您可能需要加上 `sudo` 來取得權限，像這樣：`sudo npm install -g @google/gemini-cli`。
         </details>
 
 ## 功能
@@ -77,7 +62,7 @@
 本專案會產生兩個獨立的應用程式：
 
 1.  **`Gemini CLI Launcher.app` (macOS) / `Gemini CLI Launcher.exe` (Windows)**: 
-    *   提供圖形化介面，讓使用者設定 `nvm` (macOS) 或 `nvm-windows` (Windows) 版本和 `gemini` 專案目錄。
+    *   提供圖形化介面，讓使用者設定要使用的 Node.js 版本，以及執行 `gemini` 指令時所在的專案工作目錄。
     *   可儲存設定，並提供「下次不再詢問」的選項，實現快速啟動。
     *   自動產生並執行 Shell/Batch 腳本，在新終端機視窗中完成環境設定並啟動 `gemini`。
 
@@ -110,7 +95,7 @@
            <img width="275" height="382" alt="截圖 2025-10-13 下午3 56 36" src="https://github.com/user-attachments/assets/9f2d3202-9ae6-4b6f-a009-8d24ac5f0945" />
 
 3.  **首次設定**
-    *   第一次執行 `Gemini CLI Launcher` 時，請在圖形介面中設定您要使用的 Node.js 版本和 `gemini` 專案所在的目錄。
+    *   第一次執行 `Gemini CLI Launcher` 時，請在圖形介面中設定您要使用的 Node.js 版本和執行 `gemini` 指令時的專案工作目錄。
     *   如果您希望未來跳過此設定畫面直接執行，可以勾選「下次不再詢問，直接執行」。
 
 4.  **重設設定**

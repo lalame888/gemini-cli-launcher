@@ -2,7 +2,7 @@
 ; Inno Setup script for Gemini CLI Launcher
 
 #define MyAppName "Gemini CLI Launcher"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "lalame888"
 #define MyAppURL "https://github.com/lalame888/gemini-cli-launcher"
 #define MyAppExeName "Gemini CLI Launcher.exe"

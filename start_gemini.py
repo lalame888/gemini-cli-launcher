@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, filedialog
+from tkinter import messagebox, filedialog, font
 import json
 import os
 import subprocess
@@ -199,7 +199,20 @@ class ConfigApp:
         dir_frame = tk.LabelFrame(master, text="目錄設定", padx=10, pady=10)
         dir_frame.pack(padx=10, pady=5, fill="x")
 
-        tk.Label(dir_frame, text="Gemini CLI 目錄:").pack(anchor="w")
+        dir_label_frame = tk.Frame(dir_frame)
+        dir_label_frame.pack(fill="x", anchor="w")
+        
+        tk.Label(dir_label_frame, text="專案目錄:").pack(side="left", anchor="w")
+        
+        help_button = tk.Button(dir_label_frame, text="?", 
+                                command=self.show_directory_help,
+                                fg="blue",
+                                relief=tk.FLAT,
+                                borderwidth=0,
+                                highlightthickness=0,
+                                cursor="hand2")
+        help_button.pack(side="left", anchor="w", padx=2)
+
         dir_entry_frame = tk.Frame(dir_frame)
         dir_entry_frame.pack(fill="x")
         self.dir_entry = tk.Entry(dir_entry_frame, textvariable=self.gemini_directory)
@@ -218,6 +231,12 @@ class ConfigApp:
         # --- Initial State ---
         self.toggle_nvm_entry()
         master.eval('tk::PlaceWindow . center')
+
+
+    def show_directory_help(self):
+        """Shows a messagebox with help text for the directory selection."""
+        help_text = "請選擇您要執行 `gemini` 指令的專案工作目錄。\n\n這通常是您專案的根目錄。"
+        messagebox.showinfo("專案目錄說明", help_text, parent=self.master)
 
 
     def toggle_nvm_entry(self):
